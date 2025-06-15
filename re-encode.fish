@@ -19,6 +19,7 @@ end
 function matches_regexp
 	if [ -z "$regexp" ]
 		return 0
+	end
 	
 	for input in $argv
 
@@ -66,7 +67,7 @@ for file in $(files_at "$input_dir")
 		end
 
 		# re-encode the video to the target; if this doesn't work trash the result
-		if not ffmpeg -i "$file" -c:v libsvtav1 -crf 50 -g 300 -c:a libopus "$output_file"
+		if not ffmpeg -i "$file" -c:v libsvtav1 -g 600 -c:a libopus "$output_file"
 			if trash "$output_file"
 				err "Failed to encode to '$output_file', output is TRASHED"
 			else
