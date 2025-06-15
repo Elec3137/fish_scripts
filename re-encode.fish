@@ -9,6 +9,12 @@ if not path is -d "$input_dir"
 	exit 1
 end
 
+function err
+	set_color brred
+	echo $argv
+	set_color normal
+end
+
 # returns true if $regexp is empty or if it matches with any input arg
 function matches_regexp
 	if [ -z "$regexp" ]
@@ -52,8 +58,21 @@ end
 for file in $(files_at "$input_dir")
 
 	if matches_regexp "$file"
+		set output_file "$output_dir/$(path change-extension 'webm' "$file")"
 
-		# re-encode the video to the target
-		ffmpeg -i "$file" -c:v libsvtav1 -crf 50 -g 300 -c:a libopus "$output_dir/$(path change-extension 'webm' "$file")"
+		if path is $output_file
+			err "Output file '$output_file' already exists, SKIPPING"
+			continue
+		end
+
+		# re-encode the video to the target; if this doesn't work trash the result
+		if not ffmpeg -i "$file" -c:v libsvtav1 -crf 50 -g 300 -c:a libopus "$output_file"
+			if trash "$output_file"
+				err "Failed to encode to '$output_file', output is TRASHED"
+			else
+				err "Failed to encode to '$output_file', EXITING"
+				exit 1
+			end
+		end
 	end
 end
