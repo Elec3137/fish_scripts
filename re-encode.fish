@@ -9,17 +9,19 @@ if not path is -d "$input_dir"
 	exit 1
 end
 
-# returns true if $regexp is empty or if it matches with the input arg
+# returns true if $regexp is empty or if it matches with any input arg
 function matches_regexp
-	set input $argv[1]
+	if [ -z "$regexp" ]
+		return 0
+	
+	for input in $argv
 
-	if [ -z "$regexp"]
-		return 0
-	else if [ -n "$input" ] && string match -qr "$regexp" "$input" 
-		return 0
-	else
-		return 1
+		if [ -n "$input" ] && string match -qr "$regexp" "$input" 
+			return 0
+		end
 	end
+
+	return 1
 end
 
 # find wrappers for readability
