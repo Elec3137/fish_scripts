@@ -9,7 +9,7 @@ for file in $(fd . ./ --type file)
 		set newfile $(path change-extension 'jxl' $file)
 
 		# If the target file doesn't already exist, and the command works properly
-		if not path is $newfile && cjxl --lossless_jpeg=1 -q 100 -e 9 "$file" "$newfile"
+		if not path is $newfile && cjxl --lossless_jpeg=1 -q 100 -e 10 "$file" "$newfile"
 			trash $file || exit
 			set_color cyan; printf "\tTrashed '%s', wrote '%s'\n" $file $newfile; set_color normal
 		else
