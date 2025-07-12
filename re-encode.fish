@@ -59,7 +59,7 @@ end
 for file in $(files_at "$input_dir")
 
 	if matches_regexp "$file"
-		set output_file "$output_dir/$(path change-extension 'webm' "$file")"
+		set output_file "$output_dir/$(path change-extension 'mkv' "$file")"
 
 		if path is $output_file
 			err "Output file '$output_file' already exists, SKIPPING"
@@ -67,7 +67,7 @@ for file in $(files_at "$input_dir")
 		end
 
 		# re-encode the video to the target; if this doesn't work trash the result
-		if not ffmpeg -i "$file" -c:v libsvtav1 -g 600 -c:a libopus "$output_file"
+		if not ffmpeg -i "$file" -pix_fmt yuv420p10le -c:v libsvtav1 -crf 35 -svtav1-params tune=0:keyint=10s -preset 0 -c:a libopus -b:a 128k -c:s copy "$output_file"
 			if trash "$output_file"
 				err "Failed to encode to '$output_file', output is TRASHED"
 			else
