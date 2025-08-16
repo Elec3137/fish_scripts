@@ -3,7 +3,8 @@
 function print_usage
     printf 'usage: <input_dir> [<regexp>]
 
-re-encodes (videos) from given $input_dir to its parent directory
+re-encodes (videos) from given $input_dir to your working directory
+preserves paths, so you may want to be just before your input_dir
 '
 end
 
@@ -26,8 +27,8 @@ if not path is -d "$input_dir"
     err "'$input_dir' is not a valid path"
 end
 
-set output_dir $(path dirname "$input_dir")
-if test "$(path normalize "$input_dir")" -eq "$(path normalize "$output_dir")"
+set output_dir "./re-encoded"
+if test "$(path normalize "$input_dir")" = "."
     err "output dir '$output_dir' should not be equal to input dir '$input_dir' for risk of self-recursion"
 end
 
@@ -51,7 +52,7 @@ for file in $(fd "$regexp" -t file "$input_dir")
 
     set output_file "$output_dir/$(path change-extension 'mkv' "$file")"
 
-    if path is "$output_file"
+    if path is -f "$output_file"
         err "output file '$output_file' already exists!"
     end
 
