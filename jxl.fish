@@ -51,9 +51,8 @@ end
 
 if not rmdir "$trashdir"
     read -P "Delete original images in '$trashdir' now? [y/N] " input
-    set input (string lower -- $input)
 
-    if test "$input" = y
+    if test "$(string lower -- $input)" = y
         rm -rv "$trashdir"
     end
 end
