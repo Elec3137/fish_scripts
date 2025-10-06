@@ -39,7 +39,7 @@ for file in $(fd . ./ --type file)
                 err "Failed to trash '$file'"
             end
         else
-            err "Failed to process '$file'"
+            info "Failed to process '$file', skipping!"
         end
 
     else
