@@ -42,14 +42,13 @@ for file in $(fd . ./ --type file -E "original-images_*" -L)
             info "Failed to process '$file', skipping!"
         end
 
-    else
-        info "Skipped '$file'"
+        info
     end
-
-    info
 end
 
-if not rmdir "$trashdir"
+if rmdir "$trashdir"
+    info "removed empty trash directory at '$trashdir'"
+else
     read -P "Delete original images in '$trashdir' now? [y/N] " input
 
     if test "$(string lower -- $input)" = y
