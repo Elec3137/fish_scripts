@@ -49,9 +49,11 @@ for file in $(fd . ./ --type file)
     info
 end
 
-read -P "Delete original images in '$trashdir' now? [y/N] " input
-set input (string lower -- $input)
+if not rmdir "$trashdir"
+    read -P "Delete original images in '$trashdir' now? [y/N] " input
+    set input (string lower -- $input)
 
-if test "$input" = y
-    rm -rv "$trashdir"
+    if test "$input" = y
+        rm -rv "$trashdir"
+    end
 end
