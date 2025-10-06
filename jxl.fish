@@ -25,25 +25,23 @@ if not mkdir "$trashdir"
 end
 info
 
-for file in $(fd . ./ --type file -E "original-images_*" -L)
-    if string match -qr "jpeg|jpg|png" "$(string lower $(path extension "$file"))"
-        info "Processing '$file'..."
+for file in $(fd . ./ --type file -E "original-images_*" -L -e jpeg -e jpg -e png)
+    info "Processing '$file'..."
 
-        set newfile $(path change-extension 'jxl' "$file")
+    set newfile $(path change-extension 'jxl' "$file")
 
-        if path is "$newfile"
-            err "Output file '$newfile' already exists"
-        else if cjxl --lossless_jpeg=1 -q 100 -e 10 "$file" "$newfile"
-            info "$(du -h "$file" | cut -f 1) -> $(du -h "$newfile" | cut -f 1)"
-            if not mv -vt "$trashdir" "$file"
-                err "Failed to trash '$file'"
-            end
-        else
-            info "Failed to process '$file', skipping!"
+    if path is "$newfile"
+        err "Output file '$newfile' already exists"
+    else if cjxl --lossless_jpeg=1 -q 100 -e 10 "$file" "$newfile"
+        info "$(du -h "$file" | cut -f 1) -> $(du -h "$newfile" | cut -f 1)"
+        if not mv -vt "$trashdir" "$file"
+            err "Failed to trash '$file'"
         end
-
-        info
+    else
+        info "Failed to process '$file', skipping!"
     end
+
+    info
 end
 
 if rmdir "$trashdir"
