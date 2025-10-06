@@ -25,7 +25,7 @@ if not mkdir "$trashdir"
 end
 info
 
-for file in $(fd . ./ --type file -E "original-images_*")
+for file in $(fd . ./ --type file -E "original-images_*" -L)
     if string match -qr "jpeg|jpg|png" "$(string lower $(path extension "$file"))"
         info "Processing '$file'..."
 
